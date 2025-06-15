@@ -1,0 +1,12 @@
+{
+  "name": "game-client",
+  "description": "Unity WebGL game client with Socket.IO integration",
+  "type": "client",
+  "config": {
+    "unity": {
+      "root": "client-unity",
+      "build": "WebGL",
+      "socketio": "client-unity/src/socketio-unity"
+    }
+  }
+} 

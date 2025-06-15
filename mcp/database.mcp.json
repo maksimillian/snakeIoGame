@@ -1,0 +1,11 @@
+{
+  "name": "database",
+  "description": "PostgreSQL database with Prisma ORM",
+  "type": "database",
+  "config": {
+    "prisma": {
+      "schema": "db/prisma-docker/prisma/schema.prisma",
+      "migrations": "db/prisma-docker/prisma/migrations"
+    }
+  }
+} 

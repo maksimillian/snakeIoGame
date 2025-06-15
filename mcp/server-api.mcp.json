@@ -1,0 +1,11 @@
+{
+  "name": "server-api",
+  "description": "NestJS Socket.IO server for game communication",
+  "type": "api",
+  "config": {
+    "nest": {
+      "root": "server/chat-api",
+      "port": 3000
+    }
+  }
+} 

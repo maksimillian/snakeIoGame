@@ -1,0 +1,11 @@
+{
+  "name": "infra",
+  "description": "Infrastructure configuration for Railway deployment",
+  "type": "infrastructure",
+  "config": {
+    "railway": {
+      "project": "snakeio",
+      "services": ["api", "db", "unity-web"]
+    }
+  }
+} 

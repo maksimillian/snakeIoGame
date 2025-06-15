@@ -1,0 +1,11 @@
+{
+  "name": "web-frontend",
+  "description": "Web frontend for game lobby and leaderboard",
+  "type": "frontend",
+  "config": {
+    "react": {
+      "root": "frontend",
+      "port": 3001
+    }
+  }
+} 
