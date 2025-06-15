@@ -6,7 +6,7 @@
     "unity": {
       "root": "client-unity",
       "build": "WebGL",
-      "socketio": "client-unity/src/socketio-unity"
+      "socketio": "src/socketio-unity"
     }
   }
 } 
