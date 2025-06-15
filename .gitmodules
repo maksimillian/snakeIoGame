@@ -1,0 +1,12 @@
+[submodule "client-unity/src/socketio-unity"]
+	path = client-unity/src/socketio-unity
+	url = https://github.com/itisnajim/SocketIOUnity
+[submodule "infra/unity-nginx"]
+	path = infra/unity-nginx
+	url = https://github.com/brikabrak/unity-nginx-webgl
+[submodule "server/chat-api"]
+	path = server/chat-api
+	url = https://github.com/erickmarx/chat-api
+[submodule "db/prisma-docker"]
+	path = db/prisma-docker
+	url = https://github.com/grdnmsz/prisma-docker

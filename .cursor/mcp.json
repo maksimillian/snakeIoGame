@@ -1,0 +1,8 @@
+{
+  "$schema": "https://cursor.sh/schemas/mcp.json",
+  "root": "mcp",
+  "entrypoint": "project.mcp.json",
+  "tools": {
+    "openaiApiKey": "${OPENAI_API_KEY}"
+  }
+} 

@@ -1,0 +1,17 @@
+# ─ Node / PNPM
+node_modules/
+.pnpm/
+# ─ Docker
+*.log
+# ─ Prisma
+prisma/.cache/
+# ─ Unity
+[Ll]ibrary/
+[Tt]emp/
+[Bb]uild/
+.obj/
+*.csproj
+*.sln
+# ─ OS
+.DS_Store
+Thumbs.db 
