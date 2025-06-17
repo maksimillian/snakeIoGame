@@ -1,11 +1,72 @@
 {
   "name": "web-frontend",
-  "description": "Web frontend for game lobby and leaderboard",
-  "type": "frontend",
-  "config": {
-    "react": {
-      "root": "frontend",
-      "port": 3001
+  "description": "React landing page with WebGL container for Snake.io game",
+  "root": "frontend",
+  "template": {
+    "repo": "sublime-railway/docker-react",
+    "description": "Dockerized React app with hot reload"
+  },
+  "dependencies": {
+    "server-api": {
+      "endpoints": [
+        "/servers",
+        "/servers/:id"
+      ]
+    }
+  },
+  "components": {
+    "Layout": {
+      "Header": "Navigation and branding",
+      "Footer": "Links and social media",
+      "Container": "Main content wrapper"
+    },
+    "GameFrame": {
+      "WebGLContainer": "Unity WebGL game container",
+      "LoadingScreen": "Game loading screen with progress",
+      "ErrorBoundary": "Game error handling and recovery",
+      "FullscreenToggle": "Toggle fullscreen mode"
+    },
+    "LandingPage": {
+      "Hero": {
+        "Title": "Game title and tagline",
+        "PlayButton": "Start game button",
+        "Background": "Animated background"
+      },
+      "Features": {
+        "Gameplay": "Core gameplay features",
+        "Multiplayer": "Online multiplayer features",
+        "Customization": "Skin and customization options"
+      },
+      "HowToPlay": {
+        "Controls": "Game controls guide",
+        "Objectives": "Game objectives and goals",
+        "Tips": "Tips for new players"
+      },
+      "News": {
+        "Updates": "Latest game updates",
+        "Events": "Current and upcoming events",
+        "Announcements": "Important announcements"
+      }
+    },
+    "Info": {
+      "FAQ": "Frequently asked questions",
+      "Support": "Support and contact information",
+      "Terms": "Terms of service and privacy policy",
+      "Credits": "Game credits and acknowledgments"
+    },
+    "ServerStatus": {
+      "StatusList": "Server status overview",
+      "RegionMap": "Server locations map",
+      "Maintenance": "Maintenance schedule"
+    }
+  },
+  "docker": {
+    "image": "node:18-alpine",
+    "port": 3001,
+    "environment": {
+      "API_URL": "http://localhost:3000",
+      "SOCKET_URL": "ws://localhost:3000/game",
+      "NODE_ENV": "development"
     }
   }
 } 

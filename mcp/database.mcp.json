@@ -1,11 +1,133 @@
 {
   "name": "database",
-  "description": "PostgreSQL database with Prisma ORM",
-  "type": "database",
-  "config": {
-    "prisma": {
-      "schema": "db/prisma-docker/prisma/schema.prisma",
-      "migrations": "db/prisma-docker/prisma/migrations"
+  "description": "PostgreSQL database with Prisma ORM for Snake.io game",
+  "root": "db",
+  "template": {
+    "repo": "grdnmsz/prisma-docker",
+    "description": "Dockerized PostgreSQL with Prisma"
+  },
+  "schema": {
+    "enums": {
+      "Region": ["USEast", "USWest", "Europe", "Asia", "Oceania"],
+      "SkinUnlockType": ["FREE", "SCORE_GATE", "COIN_PURCHASE", "EVENT"]
+    },
+    "models": {
+      "Player": {
+        "id": "Int @id @default(autoincrement())",
+        "username": "String @unique",
+        "email": "String? @unique",
+        "passwordHash": "String?",
+        "createdAt": "DateTime @default(now())",
+        "updatedAt": "DateTime @updatedAt",
+        "bestScore": "Int @default(0)",
+        "totalKills": "Int @default(0)",
+        "bestRank": "Int?",
+        "sessions": "PlayerSession[]",
+        "ownedSkins": "PlayerSkin[]"
+      },
+      "Server": {
+        "id": "Int @id @default(autoincrement())",
+        "region": "Region",
+        "capacity": "Int @default(5000)",
+        "createdAt": "DateTime @default(now())",
+        "rooms": "Room[]"
+      },
+      "Room": {
+        "id": "Int @id @default(autoincrement())",
+        "serverId": "Int",
+        "name": "String",
+        "createdAt": "DateTime @default(now())",
+        "server": "Server @relation(fields: [serverId], references: [id])",
+        "sessions": "PlayerSession[]"
+      },
+      "PlayerSession": {
+        "id": "Int @id @default(autoincrement())",
+        "playerId": "Int",
+        "roomId": "Int",
+        "spawnedAt": "DateTime @default(now())",
+        "score": "Int @default(0)",
+        "kills": "Int @default(0)",
+        "topPosition": "Int?",
+        "length": "Int @default(1)",
+        "updatedAt": "DateTime @updatedAt",
+        "player": "Player @relation(fields: [playerId], references: [id])",
+        "room": "Room @relation(fields: [roomId], references: [id])"
+      },
+      "Skin": {
+        "id": "Int @id @default(autoincrement())",
+        "name": "String",
+        "rarity": "Int @default(1)",
+        "unlockType": "SkinUnlockType",
+        "priceCoins": "Int?",
+        "scoreRequired": "Int?",
+        "assetUrl": "String",
+        "owners": "PlayerSkin[]"
+      },
+      "PlayerSkin": {
+        "id": "Int @id @default(autoincrement())",
+        "playerId": "Int",
+        "skinId": "Int",
+        "unlockedAt": "DateTime @default(now())",
+        "isEquipped": "Boolean @default(false)",
+        "player": "Player @relation(fields: [playerId], references: [id])",
+        "skin": "Skin @relation(fields: [skinId], references: [id])"
+      }
+    },
+    "operations": {
+      "spawn": {
+        "type": "INSERT",
+        "table": "player_sessions",
+        "fields": ["score", "kills", "topPosition", "length"],
+        "defaults": {
+          "score": 0,
+          "kills": 0,
+          "topPosition": null,
+          "length": 1
+        }
+      },
+      "move": {
+        "type": "UPDATE",
+        "table": "player_sessions",
+        "fields": ["length"],
+        "conditions": ["id"]
+      },
+      "boost": {
+        "type": "UPDATE",
+        "table": "player_sessions",
+        "fields": ["length"],
+        "conditions": ["id"]
+      },
+      "eatPellet": {
+        "type": "UPDATE",
+        "table": "player_sessions",
+        "fields": ["score", "length", "topPosition"],
+        "conditions": ["id"]
+      },
+      "killSnake": {
+        "type": "UPDATE",
+        "table": "player_sessions",
+        "fields": ["kills", "score"],
+        "conditions": ["id"]
+      },
+      "death": {
+        "type": "TRANSACTION",
+        "steps": [
+          {
+            "type": "DELETE",
+            "table": "player_sessions",
+            "returning": ["score", "kills", "topPosition"]
+          },
+          {
+            "type": "UPDATE",
+            "table": "players",
+            "fields": ["bestScore", "totalKills", "bestRank"]
+          }
+        ]
+      }
     }
+  },
+  "docker": {
+    "image": "postgres:15-alpine",
+    "port": 5432
   }
 } 

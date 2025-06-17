@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Region {
+  USEast
+  USWest
+  Europe
+  Asia
+  Oceania
+}
+
+enum SkinUnlockType {
+  FREE
+  SCORE_GATE
+  COIN_PURCHASE
+  EVENT
+}
+
+model User {
+  id      Int      @default(autoincrement()) @id
+  email   String   @unique
+  name    String?
+}
+
+model Player {
+  id          Int            @id @default(autoincrement())
+  username    String         @unique
+  email       String?        @unique
+  passwordHash String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  bestScore   Int           @default(0)
+  totalKills  Int           @default(0)
+  bestRank    Int?
+  sessions    PlayerSession[]
+  ownedSkins  PlayerSkin[]
+}
+
+model Server {
+  id        Int      @id @default(autoincrement())
+  region    Region
+  capacity  Int      @default(5000)
+  createdAt DateTime @default(now())
+  rooms     Room[]
+}
+
+model Room {
+  id        Int            @id @default(autoincrement())
+  serverId  Int
+  name      String
+  createdAt DateTime       @default(now())
+  server    Server         @relation(fields: [serverId], references: [id])
+  sessions  PlayerSession[]
+}
+
+model PlayerSession {
+  id          Int      @id @default(autoincrement())
+  playerId    Int
+  roomId      Int
+  spawnedAt   DateTime @default(now())
+  score       Int      @default(0)
+  kills       Int      @default(0)
+  topPosition Int?
+  length      Int      @default(1)
+  updatedAt   DateTime @updatedAt
+  player      Player   @relation(fields: [playerId], references: [id])
+  room        Room     @relation(fields: [roomId], references: [id])
+}
+
+model Skin {
+  id            Int           @id @default(autoincrement())
+  name          String
+  rarity        Int          @default(1)
+  unlockType    SkinUnlockType
+  priceCoins    Int?
+  scoreRequired Int?
+  assetUrl      String
+  owners        PlayerSkin[]
+}
+
+model PlayerSkin {
+  id         Int      @id @default(autoincrement())
+  playerId   Int
+  skinId     Int
+  unlockedAt DateTime @default(now())
+  isEquipped Boolean  @default(false)
+  player     Player   @relation(fields: [playerId], references: [id])
+  skin       Skin     @relation(fields: [skinId], references: [id])
+}

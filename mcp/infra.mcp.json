@@ -1,11 +1,60 @@
 {
   "name": "infra",
-  "description": "Infrastructure configuration for Railway deployment",
-  "type": "infrastructure",
-  "config": {
-    "railway": {
-      "project": "snakeio",
-      "services": ["api", "db", "unity-web"]
+  "description": "Docker and Railway configuration for Snake.io game",
+  "root": "infra",
+  "template": {
+    "repo": "railwayapp-templates/datadog-agent-railway-starter",
+    "description": "Multi-container Railway starter template"
+  },
+  "services": {
+    "game-client": {
+      "port": 8080,
+      "healthcheck": "/",
+      "env": [
+        "SOCKET_URL",
+        "API_URL"
+      ]
+    },
+    "server-api": {
+      "port": 3000,
+      "healthcheck": "/health",
+      "env": [
+        "DATABASE_URL",
+        "JWT_SECRET",
+        "CORS_ORIGIN"
+      ]
+    },
+    "web-frontend": {
+      "port": 3001,
+      "healthcheck": "/",
+      "env": [
+        "API_URL",
+        "GAME_URL"
+      ]
+    },
+    "database": {
+      "port": 5432,
+      "env": [
+        "POSTGRES_USER",
+        "POSTGRES_PASSWORD",
+        "POSTGRES_DB"
+      ]
     }
+  },
+  "railway": {
+    "template": true,
+    "services": [
+      "game-client",
+      "server-api",
+      "web-frontend",
+      "database"
+    ],
+    "regions": [
+      "USEast",
+      "USWest",
+      "Europe",
+      "Asia",
+      "Oceania"
+    ]
   }
 } 

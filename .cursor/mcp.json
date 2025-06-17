@@ -1,8 +1,11 @@
 {
-  "$schema": "https://cursor.sh/schemas/mcp.json",
-  "root": "mcp",
-  "entrypoint": "project.mcp.json",
-  "tools": {
-    "openaiApiKey": "${OPENAI_API_KEY}"
-  }
+  "name": "snakeio",
+  "description": "Multiplayer Snake.io game with Unity WebGL client, NestJS server, and React portal",
+  "contexts": [
+    "mcp/game-client.mcp.json",
+    "mcp/server-api.mcp.json",
+    "mcp/database.mcp.json",
+    "mcp/web-frontend.mcp.json",
+    "mcp/infra.mcp.json"
+  ]
 } 
