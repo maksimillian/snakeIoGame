@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &647985979089293892
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3771620985591995537}
+  - component: {fileID: 5315991287871473063}
+  m_Layer: 0
+  m_Name: Snake
+  m_TagString: Snake
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3771620985591995537
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 647985979089293892}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+--- !u!114 &5315991287871473063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 647985979089293892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5a604b8559aade489143835e1ef9daa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visualUpdateRate: 60
+  segmentSpeed: 30
+  segmentSpeedMultiplier: 0.05
+  distanceThreshold: 0.001
+  rotationSpeed: 0.25
+  lerpDurationMultiplier: 2.5
+  bodySegmentLerpSpeed: 8
+  predictionSmoothness: 0.8
+  headSmoothTime: 0.08
+  headMaxSpeed: 100
+  bodySegmentPrefab: {fileID: 4965220948371737553, guid: 4fec0938aa2adcd4cb6f70ec72916e18, type: 3}
+  initialBodySegments: 5
+  colliderRadius: 0.3
+  showServerPositions: 0
+  serverPositionColor: {r: 1, g: 0, b: 0, a: 1}
+  isLocalPlayer: 1
+  playerId: -1
+  score: 0
+  kills: 0
+  isAlive: 1
+  foodProgress: 0
+  segmentSize: 1
+  bodySegments: []
+  isBoosting: 0
+  serverPosition: {x: 0, y: 0, z: 0}
+  serverIsAlive: 1
+  interpolationDuration: 0.016
+  lastServerUpdateTime: 0
+  hasReceivedFirstUpdate: 0
+  maxPredictionTime: 0.1
+  lastDirection: {x: 0, y: 0, z: 0}
+  smoothedDirection: {x: 0, y: 0, z: 0}
+  directionSmoothTime: 0.05
+  correctedPosition: {x: 0, y: 0, z: 0}
+  correctionSmoothTime: 0.05
+  hasCollided: 0
+  collisionCooldown: 0
+  hasDied: 0
+  spawnTime: 0
+  currentPosition: {x: 0, y: 0, z: 0}
+  movementDirection: {x: 0, y: 0, z: 0}
+  movementSpeed: 0
+  isMoving: 0
+  segmentSpacing: 0.4
+  lastKnownDirection: {x: 1, y: 0, z: 0}
+  lastKnownSpeed: 4
+  lastKnownBoosting: 0
+  isUsingClientPrediction: 0

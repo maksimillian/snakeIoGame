@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Test</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Socket.IO Library Test</h1>
+    <div id="status">Loading...</div>
+    <div id="connection-test"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusDiv = document.getElementById('status');
+            const connectionTestDiv = document.getElementById('connection-test');
+            
+            // Test if Socket.IO library is loaded
+            if (typeof io !== 'undefined') {
+                statusDiv.innerHTML = '<span style="color: green;">✓ Socket.IO library loaded successfully</span>';
+                console.log('Socket.IO library available:', io);
+                
+                // Test connection to server
+                try {
+                    const socket = io('http://localhost:3000', {
+                        transports: ['websocket', 'polling']
+                    });
+                    
+                    socket.on('connect', () => {
+                        connectionTestDiv.innerHTML = '<span style="color: green;">✓ Connected to server successfully</span>';
+                        console.log('Connected to server with ID:', socket.id);
+                    });
+                    
+                    socket.on('connect_error', (error) => {
+                        connectionTestDiv.innerHTML = '<span style="color: red;">✗ Connection failed: ' + error.message + '</span>';
+                        console.error('Connection error:', error);
+                    });
+                    
+                    socket.on('disconnect', (reason) => {
+                        connectionTestDiv.innerHTML = '<span style="color: orange;">⚠ Disconnected: ' + reason + '</span>';
+                        console.log('Disconnected:', reason);
+                    });
+                    
+                } catch (error) {
+                    connectionTestDiv.innerHTML = '<span style="color: red;">✗ Failed to create socket: ' + error.message + '</span>';
+                    console.error('Socket creation error:', error);
+                }
+            } else {
+                statusDiv.innerHTML = '<span style="color: red;">✗ Socket.IO library not loaded</span>';
+                console.error('Socket.IO library not available');
+            }
+        });
+    </script>
+</body>
+</html> 

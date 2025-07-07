@@ -55,7 +55,7 @@ export class AuthService {
 
   async login(username: string, password: string) {
     // Find player by username
-    const player = await this.prisma.player.findUnique({
+    const player = await this.prisma.player.findFirst({
       where: { username },
     });
 

@@ -1,6 +1,6 @@
 {
   "name": "server-api",
-  "description": "NestJS server with Socket.IO for Snake.io game",
+  "description": "NestJS server with Socket.IO for browser-based Snake.io game with auto-management and bots",
   "root": "server",
   "template": {
     "repo": "erickmarx/chat-api",
@@ -8,34 +8,38 @@
   },
   "dependencies": {
     "database": {
-      "models": ["Player", "Server", "Room", "PlayerSession", "Skin", "PlayerSkin"]
+      "models": ["Player", "Server", "Room", "PlayerSession", "Skin", "PlayerSkin", "Bot"]
     }
   },
   "api": {
     "events": {
-      "player:join": "Player joins a room",
+      "player:join": "Player joins a room (auto-assigned or friend code)",
       "player:leave": "Player leaves a room",
       "snake:spawn": "Create new snake session",
       "snake:move": "Update snake position based on mouse direction",
-      "snake:boost": "Activate speed boost (holding RMB)",
+      "snake:boost": "Activate speed boost (holding LMB)",
       "snake:die": "Handle snake death and update best score",
       "snake:eat": "Handle food consumption and score update",
       "snake:kill": "Handle snake kill and update kill count",
       "room:state": "Broadcast room state to all players",
+      "game:state": "Broadcast current game state (snakes, food, scores)",
       "skin:equip": "Equip a skin for player's snake",
       "skin:unlock": "Unlock a new skin for player",
-      "game:state": "Broadcast current game state (snakes, food, scores)"
+      "server:auto-join": "Auto-assign player to best available server",
+      "room:auto-create": "Auto-create new room when needed"
     },
     "endpoints": {
       "auth": {
+        "POST /auth/guest": "Create anonymous guest session",
         "POST /auth/register": "Register new player",
         "POST /auth/login": "Player login",
+        "POST /auth/upgrade": "Convert guest to registered account",
         "GET /auth/me": "Get current player info",
         "POST /auth/refresh": "Refresh JWT token"
       },
       "rooms": {
-        "GET /rooms": "List available rooms",
-        "POST /rooms": "Create new room",
+        "POST /rooms/play": "Auto-join best available room",
+        "POST /rooms/join": "Join room by friend code",
         "GET /rooms/:id": "Get room details",
         "GET /rooms/:id/leaderboard": "Get room leaderboard",
         "GET /rooms/:id/players": "Get active players in room"
@@ -56,23 +60,46 @@
       },
       "servers": {
         "GET /servers": "List available game servers",
-        "GET /servers/:id": "Get server details",
-        "GET /servers/:id/rooms": "Get rooms in server"
+        "GET /servers/status": "Get server load and availability",
+        "POST /servers/scale": "Scale servers based on demand",
+        "DELETE /servers/:id": "Remove empty server"
       }
     }
   },
   "structure": {
     "src": {
-      "auth": "Authentication module with JWT",
+      "auth": "Authentication module with guest support",
       "game": "Game logic and WebSocket gateway",
+      "bots": "Bot AI and behavior system",
       "prisma": "Database schema and client",
-      "rooms": "Room management",
+      "rooms": "Room management with auto-matchmaking and auto-creation",
       "stats": "Statistics and leaderboards",
+      "servers": "Server management and scaling",
       "dto": "Data Transfer Objects",
       "main.ts": "Application entry point",
       "app.module.ts": "Root module",
       "app.service.ts": "Application service",
       "app.controller.ts": "Application controller"
+    }
+  },
+  "features": {
+    "autoManagement": {
+      "serverScaling": "Auto-create/delete servers based on player count",
+      "loadBalancing": "Distribute players across servers efficiently",
+      "roomCreation": "Auto-create rooms when existing ones are full",
+      "cleanup": "Remove empty servers and rooms automatically"
+    },
+    "botSystem": {
+      "ai": "Realistic bot behavior and movement",
+      "population": "Maintain 7 bots per room minimum",
+      "seamless": "Bots indistinguishable from real players",
+      "skins": "Bots use random skins to appear authentic"
+    },
+    "matchmaking": {
+      "autoJoin": "One-click play with automatic room assignment",
+      "friendCode": "Join specific rooms with friend codes",
+      "loadBalancing": "Distribute players across available rooms",
+      "capacity": "Auto-create new rooms when needed"
     }
   },
   "docker": {
@@ -81,7 +108,10 @@
     "environment": {
       "DATABASE_URL": "(.env)",
       "JWT_SECRET": "(.env)",
-      "JWT_EXPIRATION": "7d"
+      "JWT_EXPIRATION": "7d",
+      "MAX_PLAYERS_PER_ROOM": "10",
+      "MIN_BOTS_PER_ROOM": "7",
+      "MAX_SERVERS": "10"
     }
   }
 } 

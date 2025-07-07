@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .connected { background: #2d5a2d; }
+        .disconnected { background: #5a2d2d; }
+        .error { background: #5a2d2d; }
+        .log {
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 5px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #45a049; }
+        button:disabled { background: #666; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <h1>WebSocket Connection Test</h1>
+    
+    <div id="status" class="status disconnected">Disconnected</div>
+    
+    <button id="connectBtn" onclick="connect()">Connect to Server</button>
+    <button id="disconnectBtn" onclick="disconnect()" disabled>Disconnect</button>
+    <button id="pingBtn" onclick="ping()" disabled>Send Ping</button>
+    <button id="testBtn" onclick="testRoomJoin()" disabled>Test Room Join</button>
+    
+    <h3>Connection Log:</h3>
+    <div id="log" class="log"></div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        let socket = null;
+        const log = document.getElementById('log');
+        const status = document.getElementById('status');
+        const connectBtn = document.getElementById('connectBtn');
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        const pingBtn = document.getElementById('pingBtn');
+        const testBtn = document.getElementById('testBtn');
+
+        function addLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            log.innerHTML += `[${timestamp}] ${message}\n`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function updateStatus(connected) {
+            if (connected) {
+                status.textContent = 'Connected';
+                status.className = 'status connected';
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = false;
+                pingBtn.disabled = false;
+                testBtn.disabled = false;
+            } else {
+                status.textContent = 'Disconnected';
+                status.className = 'status disconnected';
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+                pingBtn.disabled = true;
+                testBtn.disabled = true;
+            }
+        }
+
+        function connect() {
+            addLog('Attempting to connect to ws://localhost:3000...');
+            
+            try {
+                socket = io('http://localhost:3000', {
+                    transports: ['websocket'],
+                    timeout: 5000
+                });
+
+                socket.on('connect', () => {
+                    addLog('✅ Connected successfully!');
+                    addLog(`Client ID: ${socket.id}`);
+                    updateStatus(true);
+                });
+
+                socket.on('disconnect', (reason) => {
+                    addLog(`❌ Disconnected: ${reason}`);
+                    updateStatus(false);
+                });
+
+                socket.on('connect_error', (error) => {
+                    addLog(`❌ Connection error: ${error.message}`);
+                    updateStatus(false);
+                });
+
+                socket.on('connection:established', (data) => {
+                    addLog(`✅ Connection established: ${JSON.stringify(data)}`);
+                });
+
+                socket.on('pong', (data) => {
+                    addLog(`🏓 Pong received: ${JSON.stringify(data)}`);
+                });
+
+                socket.on('room:joined', (data) => {
+                    addLog(`🎮 Room joined: ${JSON.stringify(data)}`);
+                });
+
+                socket.on('error', (error) => {
+                    addLog(`❌ Socket error: ${error}`);
+                });
+
+            } catch (error) {
+                addLog(`❌ Failed to create socket: ${error.message}`);
+            }
+        }
+
+        function disconnect() {
+            if (socket) {
+                addLog('Disconnecting...');
+                socket.disconnect();
+                socket = null;
+            }
+        }
+
+        function ping() {
+            if (socket && socket.connected) {
+                addLog('🏓 Sending ping...');
+                socket.emit('ping');
+            } else {
+                addLog('❌ Not connected');
+            }
+        }
+
+        function testRoomJoin() {
+            if (socket && socket.connected) {
+                addLog('🎮 Testing room auto-join...');
+                socket.emit('room:auto-join');
+            } else {
+                addLog('❌ Not connected');
+            }
+        }
+
+        // Auto-connect on page load
+        window.addEventListener('load', () => {
+            addLog('Page loaded. Click "Connect to Server" to test connection.');
+        });
+    </script>
+</body>
+</html> 

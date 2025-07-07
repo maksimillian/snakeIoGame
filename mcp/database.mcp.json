@@ -1,6 +1,6 @@
 {
   "name": "database",
-  "description": "PostgreSQL database with Prisma ORM for Snake.io game",
+  "description": "PostgreSQL database with Prisma ORM for browser-based Snake.io game with bots and auto-management",
   "root": "db",
   "template": {
     "repo": "grdnmsz/prisma-docker",
@@ -9,7 +9,8 @@
   "schema": {
     "enums": {
       "Region": ["USEast", "USWest", "Europe", "Asia", "Oceania"],
-      "SkinUnlockType": ["FREE", "SCORE_GATE", "COIN_PURCHASE", "EVENT"]
+      "SkinUnlockType": ["FREE", "SCORE_GATE", "COIN_PURCHASE", "EVENT"],
+      "PlayerType": ["GUEST", "REGISTERED"]
     },
     "models": {
       "Player": {
@@ -17,11 +18,14 @@
         "username": "String @unique",
         "email": "String? @unique",
         "passwordHash": "String?",
+        "playerType": "PlayerType @default(GUEST)",
+        "guestId": "String? @unique",
         "createdAt": "DateTime @default(now())",
         "updatedAt": "DateTime @updatedAt",
         "bestScore": "Int @default(0)",
         "totalKills": "Int @default(0)",
         "bestRank": "Int?",
+        "totalGames": "Int @default(0)",
         "sessions": "PlayerSession[]",
         "ownedSkins": "PlayerSkin[]"
       },
@@ -29,16 +33,26 @@
         "id": "Int @id @default(autoincrement())",
         "region": "Region",
         "capacity": "Int @default(5000)",
+        "currentPlayers": "Int @default(0)",
+        "isActive": "Boolean @default(true)",
         "createdAt": "DateTime @default(now())",
+        "lastActivity": "DateTime @updatedAt",
         "rooms": "Room[]"
       },
       "Room": {
         "id": "Int @id @default(autoincrement())",
         "serverId": "Int",
         "name": "String",
+        "friendCode": "String @unique",
+        "maxPlayers": "Int @default(10)",
+        "currentPlayers": "Int @default(0)",
+        "botCount": "Int @default(7)",
+        "isActive": "Boolean @default(true)",
         "createdAt": "DateTime @default(now())",
+        "lastActivity": "DateTime @updatedAt",
         "server": "Server @relation(fields: [serverId], references: [id])",
-        "sessions": "PlayerSession[]"
+        "sessions": "PlayerSession[]",
+        "bots": "Bot[]"
       },
       "PlayerSession": {
         "id": "Int @id @default(autoincrement())",
@@ -49,8 +63,21 @@
         "kills": "Int @default(0)",
         "topPosition": "Int?",
         "length": "Int @default(1)",
+        "isAlive": "Boolean @default(true)",
         "updatedAt": "DateTime @updatedAt",
         "player": "Player @relation(fields: [playerId], references: [id])",
+        "room": "Room @relation(fields: [roomId], references: [id])"
+      },
+      "Bot": {
+        "id": "Int @id @default(autoincrement())",
+        "roomId": "Int",
+        "name": "String",
+        "score": "Int @default(0)",
+        "kills": "Int @default(0)",
+        "length": "Int @default(1)",
+        "isAlive": "Boolean @default(true)",
+        "spawnedAt": "DateTime @default(now())",
+        "updatedAt": "DateTime @updatedAt",
         "room": "Room @relation(fields: [roomId], references: [id])"
       },
       "Skin": {
@@ -74,33 +101,67 @@
       }
     },
     "operations": {
-      "spawn": {
+      "createGuest": {
+        "type": "INSERT",
+        "table": "players",
+        "fields": ["username", "playerType", "guestId"],
+        "defaults": {
+          "playerType": "GUEST",
+          "bestScore": 0,
+          "totalKills": 0,
+          "totalGames": 0
+        }
+      },
+      "upgradeGuest": {
+        "type": "UPDATE",
+        "table": "players",
+        "fields": ["email", "passwordHash", "playerType"],
+        "conditions": ["id"]
+      },
+      "spawnPlayer": {
         "type": "INSERT",
         "table": "player_sessions",
-        "fields": ["score", "kills", "topPosition", "length"],
+        "fields": ["playerId", "roomId", "score", "kills", "length"],
         "defaults": {
           "score": 0,
           "kills": 0,
-          "topPosition": null,
-          "length": 1
+          "length": 1,
+          "isAlive": true
         }
       },
-      "move": {
+      "spawnBot": {
+        "type": "INSERT",
+        "table": "bots",
+        "fields": ["roomId", "name", "score", "kills", "length"],
+        "defaults": {
+          "score": 0,
+          "kills": 0,
+          "length": 1,
+          "isAlive": true
+        }
+      },
+      "updatePlayerPosition": {
         "type": "UPDATE",
         "table": "player_sessions",
-        "fields": ["length"],
+        "fields": ["length", "updatedAt"],
         "conditions": ["id"]
       },
-      "boost": {
+      "updateBotPosition": {
         "type": "UPDATE",
-        "table": "player_sessions",
-        "fields": ["length"],
+        "table": "bots",
+        "fields": ["length", "updatedAt"],
         "conditions": ["id"]
       },
-      "eatPellet": {
+      "eatFood": {
         "type": "UPDATE",
         "table": "player_sessions",
         "fields": ["score", "length", "topPosition"],
+        "conditions": ["id"]
+      },
+      "botEatFood": {
+        "type": "UPDATE",
+        "table": "bots",
+        "fields": ["score", "length"],
         "conditions": ["id"]
       },
       "killSnake": {
@@ -109,20 +170,38 @@
         "fields": ["kills", "score"],
         "conditions": ["id"]
       },
-      "death": {
+      "playerDeath": {
         "type": "TRANSACTION",
         "steps": [
           {
-            "type": "DELETE",
+            "type": "UPDATE",
             "table": "player_sessions",
-            "returning": ["score", "kills", "topPosition"]
+            "returning": ["score", "kills", "topPosition"],
+            "fields": ["isAlive"],
+            "conditions": ["id"]
           },
           {
             "type": "UPDATE",
             "table": "players",
-            "fields": ["bestScore", "totalKills", "bestRank"]
+            "fields": ["bestScore", "totalKills", "bestRank", "totalGames"]
           }
         ]
+      },
+      "botDeath": {
+        "type": "UPDATE",
+        "table": "bots",
+        "fields": ["isAlive"],
+        "conditions": ["id"]
+      },
+      "cleanupEmptyRooms": {
+        "type": "DELETE",
+        "table": "rooms",
+        "conditions": ["currentPlayers = 0"]
+      },
+      "cleanupEmptyServers": {
+        "type": "DELETE",
+        "table": "servers",
+        "conditions": ["currentPlayers = 0"]
       }
     }
   },

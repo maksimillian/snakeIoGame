@@ -60,42 +60,42 @@ const UpdateTag = styled.span`
 const updates = [
   {
     id: 1,
-    date: 'March 16, 2024',
+    date: 'July 7, 2025',
     title: 'New Neon Skins Collection',
-    content: 'Introducing our latest collection of neon-themed snake skins! Glow in the dark and stand out in the arena with these vibrant new designs.',
+    content: 'Introducing our latest collection of neon-themed WOLF snake skins! Glow in the dark and stand out in the arena with these vibrant new designs.',
     type: 'new'
   },
   {
     id: 2,
-    date: 'March 15, 2024',
+    date: 'July 6, 2025',
     title: 'Performance Improvements',
     content: 'We\'ve optimized the game engine for smoother gameplay and reduced latency. Experience better performance across all servers.',
     type: 'update'
   },
   {
     id: 3,
-    date: 'March 14, 2024',
+    date: 'July 1, 2025',
     title: 'Upcoming Tournament',
-    content: 'Get ready for the Spring Championship! Starting next week, compete for exclusive rewards and the title of Snake.io Champion.',
+    content: 'Get ready for the Summer Championship! Starting next week, compete for exclusive rewards and the title of Snake.io Champion.',
     type: 'new'
   },
   {
     id: 4,
-    date: 'March 13, 2024',
+    date: 'June 25, 2025',
     title: 'Server Maintenance',
-    content: 'Scheduled maintenance for Asia servers on March 20th. We\'ll be implementing new security features and server optimizations.',
+    content: 'Scheduled maintenance for Asia servers on June 25th. We\'ll be implementing new security features and server optimizations.',
     type: 'maintenance'
   },
   {
     id: 5,
-    date: 'March 12, 2024',
-    title: 'New Power-ups',
-    content: 'Three new power-ups coming soon: Speed Boost, Shield, and Ghost Mode. Stay tuned for more details!',
+    date: 'June 17, 2024',
+    title: 'New Skins',
+    content: 'Three new skins coming soon. Stay tuned for more details!',
     type: 'update'
   },
   {
     id: 6,
-    date: 'March 11, 2024',
+    date: 'June 15, 2025',
     title: 'Community Event',
     content: 'Join our first community event this weekend! Special rewards and exclusive skins for all participants.',
     type: 'new'

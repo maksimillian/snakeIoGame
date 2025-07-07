@@ -1,9 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Player } from '@prisma/client';
 
 @Injectable()
 export class PlayerService {
   constructor(private prisma: PrismaService) {}
+
+  async createGuestPlayer(username: string): Promise<Player> {
+    return this.prisma.player.create({
+      data: {
+        username,
+      },
+    });
+  }
+
+  async updatePlayerName(playerId: number, newName: string): Promise<Player> {
+    return this.prisma.player.update({
+      where: { id: playerId },
+      data: {
+        username: newName,
+      },
+    });
+  }
 
   async getPlayer(id: number) {
     return this.prisma.player.findUnique({

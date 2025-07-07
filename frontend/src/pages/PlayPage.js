@@ -57,8 +57,8 @@ const LoadingOverlay = styled.div`
   align-items: center;
   z-index: 10;
   transition: opacity 0.3s ease;
-  opacity: ${props => props.isLoading ? 1 : 0};
-  pointer-events: ${props => props.isLoading ? 'auto' : 'none'};
+  opacity: ${props => props.$isLoading ? 1 : 0};
+  pointer-events: ${props => props.$isLoading ? 'auto' : 'none'};
 `;
 
 const LoadingText = styled.h2`
@@ -77,7 +77,7 @@ const ProgressBar = styled.div`
 `;
 
 const Progress = styled.div`
-  width: ${props => props.progress}%;
+  width: ${props => props.$progress}%;
   height: 100%;
   background: ${props => props.theme.colors.gradient};
   transition: width 0.3s ease;
@@ -208,12 +208,11 @@ function PlayPage() {
             src="/game/index.html"
             title="Snake.io Game"
             onLoad={() => setIsLoading(false)}
-            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
           />
-          <LoadingOverlay isLoading={isLoading}>
+          <LoadingOverlay $isLoading={isLoading}>
             <LoadingText>Loading Snake.io</LoadingText>
             <ProgressBar>
-              <Progress progress={progress} />
+              <Progress $progress={progress} />
             </ProgressBar>
             {progress === 100 && (
               <PlayButton onClick={() => setIsLoading(false)}>

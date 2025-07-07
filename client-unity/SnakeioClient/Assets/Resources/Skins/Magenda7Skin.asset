@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca3073be093cc54a967f1f43993ac8e, type: 3}
+  m_Name: Magenda7Skin
+  m_EditorClassIdentifier: 
+  skinName: Charm
+  description: Playtime starts now! I bring the chaos, you bring the skill.
+  skinId: 7
+  isUnlocked: 1
+  isDefault: 0
+  headSprite: {fileID: 21300000, guid: 044eac24c251a0541b8820e49102fa3e, type: 3}
+  bodySprite: {fileID: 21300000, guid: 826ad72ad606d2048a914376a025633d, type: 3}
+  skinTint: {r: 1, g: 1, b: 1, a: 1}
+  hasSpecialEffects: 0
+  requiredScore: 0
+  requiredKills: 0
+  requiredGames: 0
+  unlockPrice: 0
+  previewSprite: {fileID: 21300000, guid: 044eac24c251a0541b8820e49102fa3e, type: 3}

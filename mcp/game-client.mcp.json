@@ -1,6 +1,6 @@
 {
   "name": "game-client",
-  "description": "Unity WebGL client for Snake.io game",
+  "description": "Unity WebGL browser-based Snake.io game with auto-server/room management and bot players",
   "root": "client-unity",
   "unityProject": {
     "scripts": {
@@ -8,7 +8,9 @@
       "core": "client-unity/Assets/Scripts/Core/",
       "snake": "client-unity/Assets/Scripts/Snake/",
       "food": "client-unity/Assets/Scripts/Food/",
-      "ui": "client-unity/Assets/Scripts/UI/"
+      "ui": "client-unity/Assets/Scripts/UI/",
+      "bots": "client-unity/Assets/Scripts/Bots/",
+      "auth": "client-unity/Assets/Scripts/Auth/"
     },
     "scenes": "client-unity/Assets/Scenes/",
     "prefabs": "client-unity/Assets/Prefabs/",
@@ -33,31 +35,40 @@
         "snake:eat",
         "snake:kill",
         "room:state",
+        "game:state",
         "skin:equip",
         "skin:unlock",
-        "game:state"
+        "server:auto-join",
+        "room:auto-create"
       ]
     }
   },
   "features": {
     "authentication": {
-      "login": "Email/password login",
+      "guest": "Anonymous guest play with option to sign up",
+      "login": "Email/password login for persistent stats",
       "register": "New player registration",
       "session": "Persistent session management",
-      "refresh": "JWT token refresh"
+      "upgrade": "Convert guest to registered account"
     },
-    "room": {
-      "list": "Available rooms browser",
-      "create": "Create new room",
-      "join": "Join existing room",
-      "leave": "Leave current room",
-      "leaderboard": "Real-time room leaderboard",
-      "players": "Active players list"
+    "autoMatchmaking": {
+      "server": "Automatic server selection based on load",
+      "room": "Auto-join existing room or create new one",
+      "play": "One-click 'Play' button starts game immediately",
+      "friendCode": "Join specific room with friend code",
+      "capacity": "Auto-create new rooms when existing ones are full"
+    },
+    "botSystem": {
+      "count": "7 bots per room for consistent gameplay",
+      "behavior": "Realistic snake movement and food collection",
+      "names": "Realistic bot names and appearances",
+      "seamless": "Bots indistinguishable from real players",
+      "skins": "Bots use random skins to appear authentic"
     },
     "gameplay": {
       "snake": {
         "movement": "Mouse cursor movement",
-        "boost": "RMB for speed boost",
+        "boost": "LMB for speed boost",
         "growth": "Length increases on food consumption",
         "collision": "Death on wall/other snake collision",
         "state": "Real-time position and state updates"
@@ -91,11 +102,16 @@
         "details": "Skin information and requirements"
       }
     },
-    "servers": {
-      "list": "Available game servers",
-      "details": "Server information and status",
-      "rooms": "Server room browser"
+    "serverManagement": {
+      "auto": "Automatic server creation/deletion based on player count",
+      "loadBalancing": "Distribute players across servers",
+      "cleanup": "Remove empty servers automatically",
+      "scaling": "Scale servers based on demand"
     }
+  },
+  "browser": {
+    "webgl": "Unity WebGL build for browser compatibility",
+    "loading": "Progressive loading and asset streaming"
   },
   "docker": {
     "image": "unity-nginx-webgl",

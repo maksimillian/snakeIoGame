@@ -5,6 +5,7 @@ import InfoPage from './pages/InfoPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Updates from './components/News/Updates';
 import PlayPage from './pages/PlayPage';
+import GamePage from './pages/GamePage';
 
 // Theme
 const theme = {
@@ -288,6 +289,7 @@ function AppLayout() {
       <Navigation />
       <Routes>
         <Route path="/game" element={<PlayPage />} />
+        <Route path="/play" element={<GamePage />} />
         <Route path="/info" element={<InfoPage setSectionRefs={setInfoSectionRefs} pendingScrollSection={pendingScrollSection} setPendingScrollSection={setPendingScrollSection} />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/" element={<PlayPage />} />

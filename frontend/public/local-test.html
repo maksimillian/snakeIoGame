@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Local WebSocket Test</title>
+</head>
+<body>
+    <h1>Local WebSocket Test</h1>
+    <button onclick="testLocalhost()">Test Localhost</button>
+    <button onclick="testNgrok()">Test Ngrok</button>
+    <div id="output"></div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+        function log(message) {
+            const output = document.getElementById('output');
+            output.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>';
+            console.log(message);
+        }
+
+        function testLocalhost() {
+            log('Testing localhost connection...');
+            
+            try {
+                const socket = io('http://localhost:3000', {
+                    path: '/game',
+                    transports: ['websocket'],
+                    timeout: 10000,
+                    forceNew: true
+                });
+
+                socket.on('connect', () => {
+                    log('Localhost: CONNECTED - ID: ' + socket.id);
+                });
+
+                socket.on('connect_error', (error) => {
+                    log('Localhost: CONNECT_ERROR - ' + JSON.stringify(error));
+                });
+
+                socket.on('error', (error) => {
+                    log('Localhost: ERROR - ' + JSON.stringify(error));
+                });
+
+                socket.on('disconnect', (reason) => {
+                    log('Localhost: DISCONNECTED - ' + reason);
+                });
+
+                setTimeout(() => {
+                    if (socket.connected) {
+                        log('Localhost: Test completed successfully');
+                        socket.disconnect();
+                    } else {
+                        log('Localhost: Test timed out');
+                    }
+                }, 10000);
+
+            } catch (e) {
+                log('Localhost: EXCEPTION - ' + e);
+            }
+        }
+
+        function testNgrok() {
+            log('Testing ngrok connection...');
+            
+            try {
+                const socket = io('https://a58e-84-15-220-203.ngrok-free.app', {
+                    path: '/game',
+                    transports: ['websocket'],
+                    timeout: 10000,
+                    forceNew: true
+                });
+
+                socket.on('connect', () => {
+                    log('Ngrok: CONNECTED - ID: ' + socket.id);
+                });
+
+                socket.on('connect_error', (error) => {
+                    log('Ngrok: CONNECT_ERROR - ' + JSON.stringify(error));
+                });
+
+                socket.on('error', (error) => {
+                    log('Ngrok: ERROR - ' + JSON.stringify(error));
+                });
+
+                socket.on('disconnect', (reason) => {
+                    log('Ngrok: DISCONNECTED - ' + reason);
+                });
+
+                setTimeout(() => {
+                    if (socket.connected) {
+                        log('Ngrok: Test completed successfully');
+                        socket.disconnect();
+                    } else {
+                        log('Ngrok: Test timed out');
+                    }
+                }, 10000);
+
+            } catch (e) {
+                log('Ngrok: EXCEPTION - ' + e);
+            }
+        }
+
+        log('Page loaded. Test localhost first, then ngrok.');
+    </script>
+</body>
+</html> 

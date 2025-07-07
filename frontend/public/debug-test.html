@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Debug Test</title>
+</head>
+<body>
+    <h1>WebSocket Debug Test</h1>
+    <button onclick="runAllTests()">Run All Tests</button>
+    <div id="output"></div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+        function log(message) {
+            const output = document.getElementById('output');
+            output.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>';
+            console.log(message);
+        }
+
+        async function runAllTests() {
+            log('=== Starting WebSocket Debug Tests ===');
+            
+            // Test 1: Check if server is reachable via HTTP
+            log('Test 1: Checking HTTP connectivity...');
+            try {
+                const response = await fetch('http://localhost:3000/health');
+                const data = await response.json();
+                log('HTTP Test: SUCCESS - ' + JSON.stringify(data));
+            } catch (e) {
+                log('HTTP Test: FAILED - ' + e.message);
+                return;
+            }
+
+            // Test 2: Basic WebSocket to Socket.IO endpoint
+            log('Test 2: Basic WebSocket to Socket.IO...');
+            await testBasicWebSocket();
+
+            // Test 3: Socket.IO with different configurations
+            log('Test 3: Socket.IO with different configs...');
+            await testSocketIOConfigs();
+        }
+
+        function testBasicWebSocket() {
+            return new Promise((resolve) => {
+                try {
+                    const ws = new WebSocket('ws://localhost:3000/socket.io/?EIO=4&transport=websocket');
+                    
+                    ws.onopen = function() {
+                        log('Basic WebSocket: CONNECTED');
+                        ws.send('2probe');
+                    };
+                    
+                    ws.onmessage = function(event) {
+                        log('Basic WebSocket: MESSAGE - ' + event.data);
+                    };
+                    
+                    ws.onerror = function(error) {
+                        log('Basic WebSocket: ERROR - ' + JSON.stringify(error));
+                    };
+                    
+                    ws.onclose = function(event) {
+                        log('Basic WebSocket: CLOSED - Code: ' + event.code + ', Reason: ' + event.reason);
+                        resolve();
+                    };
+                    
+                    setTimeout(() => {
+                        if (ws.readyState === WebSocket.OPEN) {
+                            ws.close();
+                        }
+                        resolve();
+                    }, 3000);
+                    
+                } catch (e) {
+                    log('Basic WebSocket: EXCEPTION - ' + e);
+                    resolve();
+                }
+            });
+        }
+
+        function testSocketIOConfigs() {
+            return new Promise((resolve) => {
+                const configs = [
+                    {
+                        name: 'Default config',
+                        options: {
+                            path: '/game',
+                            transports: ['websocket']
+                        }
+                    },
+                    {
+                        name: 'No path',
+                        options: {
+                            transports: ['websocket']
+                        }
+                    },
+                    {
+                        name: 'Polling first',
+                        options: {
+                            path: '/game',
+                            transports: ['polling', 'websocket']
+                        }
+                    },
+                    {
+                        name: 'Force upgrade',
+                        options: {
+                            path: '/game',
+                            transports: ['websocket'],
+                            upgrade: true
+                        }
+                    }
+                ];
+
+                let currentTest = 0;
+
+                function runNextTest() {
+                    if (currentTest >= configs.length) {
+                        log('All Socket.IO tests completed');
+                        resolve();
+                        return;
+                    }
+
+                    const config = configs[currentTest];
+                    log(`Testing Socket.IO: ${config.name}`);
+                    
+                    try {
+                        const socket = io('http://localhost:3000', {
+                            ...config.options,
+                            timeout: 5000,
+                            forceNew: true
+                        });
+
+                        socket.on('connect', () => {
+                            log(`Socket.IO (${config.name}): CONNECTED - ID: ${socket.id}`);
+                            socket.disconnect();
+                            currentTest++;
+                            setTimeout(runNextTest, 1000);
+                        });
+
+                        socket.on('connect_error', (error) => {
+                            log(`Socket.IO (${config.name}): CONNECT_ERROR - ${error.message}`);
+                            socket.disconnect();
+                            currentTest++;
+                            setTimeout(runNextTest, 1000);
+                        });
+
+                        socket.on('error', (error) => {
+                            log(`Socket.IO (${config.name}): ERROR - ${JSON.stringify(error)}`);
+                        });
+
+                        socket.on('disconnect', (reason) => {
+                            log(`Socket.IO (${config.name}): DISCONNECTED - ${reason}`);
+                        });
+
+                        // Timeout
+                        setTimeout(() => {
+                            if (socket.connected) {
+                                socket.disconnect();
+                            }
+                            currentTest++;
+                            setTimeout(runNextTest, 1000);
+                        }, 5000);
+
+                    } catch (e) {
+                        log(`Socket.IO (${config.name}): EXCEPTION - ${e}`);
+                        currentTest++;
+                        setTimeout(runNextTest, 1000);
+                    }
+                }
+
+                runNextTest();
+            });
+        }
+
+        log('Page loaded. Click "Run All Tests" to start debugging.');
+    </script>
+</body>
+</html> 

@@ -1,6 +1,6 @@
 {
   "name": "web-frontend",
-  "description": "React landing page with WebGL container for Snake.io game",
+  "description": "React landing page with WebGL container for browser-based Snake.io game",
   "root": "frontend",
   "template": {
     "repo": "sublime-railway/docker-react",
@@ -10,13 +10,17 @@
     "server-api": {
       "endpoints": [
         "/servers",
-        "/servers/:id"
+        "/servers/:id",
+        "/auth/guest",
+        "/rooms/play",
+        "/rooms/join",
+        "/stats/player/:id"
       ]
     }
   },
   "components": {
     "Layout": {
-      "Header": "Navigation and branding",
+      "Header": "Navigation with guest/login status",
       "Footer": "Links and social media",
       "Container": "Main content wrapper"
     },
@@ -54,10 +58,10 @@
       "Terms": "Terms of service and privacy policy",
       "Credits": "Game credits and acknowledgments"
     },
-    "ServerStatus": {
-      "StatusList": "Server status overview",
-      "RegionMap": "Server locations map",
-      "Maintenance": "Maintenance schedule"
+    "GameStatus": {
+      "PlayerCount": "Current online players",
+      "ActiveGames": "Active games count",
+      "ServerStatus": "Server availability status"
     }
   },
   "docker": {

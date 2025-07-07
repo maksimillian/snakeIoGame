@@ -51,27 +51,21 @@ const PlannedTag = styled.span`
 const plannedUpdates = [
   {
     id: 1,
-    title: 'Classic Mode',
-    content: 'Traditional snake gameplay.',
-    date: 'Planned Q2 2024'
+    title: 'Battle Royale',
+    content: 'Last snake standing wins.',
+    date: 'Planned Q3 2025'
   },
   {
     id: 2,
-    title: 'Battle Royale',
-    content: 'Last snake standing wins.',
-    date: 'Planned Q2 2024'
+    title: 'Team Deathmatch',
+    content: 'Compete in teams.',
+    date: 'Planned Q3 2025'
   },
   {
     id: 3,
-    title: 'Team Deathmatch',
-    content: 'Compete in teams.',
-    date: 'Planned Q2 2024'
-  },
-  {
-    id: 4,
     title: 'Custom Rooms',
     content: 'Create private games with friends.',
-    date: 'Planned Q2 2024'
+    date: 'Planned Q4 2025'
   },
 ];
 

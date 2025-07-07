@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ca3073be093cc54a967f1f43993ac8e, type: 3}
+  m_Name: Green4Skin
+  m_EditorClassIdentifier: 
+  skinName: Lucky
+  description: "Who needs luck when you\u2019ve got style like mine?"
+  skinId: 4
+  isUnlocked: 1
+  isDefault: 0
+  headSprite: {fileID: 21300000, guid: 523d10b89df1ed84a86399042089eb0d, type: 3}
+  bodySprite: {fileID: 21300000, guid: e6fd5f8fa8d636245842196659ead692, type: 3}
+  skinTint: {r: 1, g: 1, b: 1, a: 1}
+  hasSpecialEffects: 0
+  requiredScore: 0
+  requiredKills: 0
+  requiredGames: 0
+  unlockPrice: 0
+  previewSprite: {fileID: 21300000, guid: 523d10b89df1ed84a86399042089eb0d, type: 3}

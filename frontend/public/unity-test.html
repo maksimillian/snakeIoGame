@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unity Connection Test</title>
+</head>
+<body>
+    <h1>Unity Connection Test</h1>
+    <button onclick="testUnityConnection()">Test Unity Connection</button>
+    <div id="output"></div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+        function log(message) {
+            const output = document.getElementById('output');
+            output.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>';
+            console.log(message);
+        }
+
+        function testUnityConnection() {
+            log('=== Testing Unity Connection ===');
+            
+            try {
+                log('Initializing socket connection to http://localhost:3000 (root namespace)');
+                
+                const socket = io('http://localhost:3000', {
+                    // No path - root namespace
+                    transports: ['websocket'],
+                    timeout: 10000,
+                    forceNew: true
+                });
+
+                log('Using WebSocket URL: ws://localhost:3000 (root namespace)');
+
+                socket.on('connect', () => {
+                    log('Socket connected successfully!');
+                    log('Socket ID: ' + socket.id);
+                    
+                    // Test the connection:established event
+                    socket.on('connection:established', (data) => {
+                        log('Connection established: ' + JSON.stringify(data));
+                    });
+                    
+                    // Test a simple event
+                    socket.emit('ping');
+                    socket.on('pong', (data) => {
+                        log('Pong received: ' + JSON.stringify(data));
+                    });
+                });
+
+                socket.on('connect_error', (error) => {
+                    log('Socket error: ' + error.message);
+                });
+
+                socket.on('disconnect', (reason) => {
+                    log('Socket disconnected: ' + reason);
+                });
+
+                log('Attempting to connect to server...');
+
+                // Timeout after 10 seconds
+                setTimeout(() => {
+                    if (socket.connected) {
+                        log('Connection test completed successfully');
+                        socket.disconnect();
+                    } else {
+                        log('Connection test timed out');
+                    }
+                }, 10000);
+
+            } catch (e) {
+                log('Exception: ' + e.message);
+            }
+        }
+
+        log('Page loaded. Click "Test Unity Connection" to start.');
+    </script>
+</body>
+</html> 

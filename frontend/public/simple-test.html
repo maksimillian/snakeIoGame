@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple WebSocket Test</title>
+</head>
+<body>
+    <h1>Simple WebSocket Test</h1>
+    <button onclick="testConnection()">Test Connection</button>
+    <div id="output"></div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+        function log(message) {
+            const output = document.getElementById('output');
+            output.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>';
+            console.log(message);
+        }
+
+        function testConnection() {
+            log('Starting connection test...');
+            
+            // Test 1: Direct WebSocket
+            log('Testing direct WebSocket...');
+            try {
+                const ws = new WebSocket('wss://a58e-84-15-220-203.ngrok-free.app/game');
+                ws.onopen = () => log('Direct WebSocket: CONNECTED');
+                ws.onerror = (e) => log('Direct WebSocket: ERROR - ' + e);
+                ws.onclose = (e) => log('Direct WebSocket: CLOSED - ' + e.code);
+            } catch (e) {
+                log('Direct WebSocket: EXCEPTION - ' + e);
+            }
+
+            // Test 2: Socket.IO with minimal config
+            log('Testing Socket.IO...');
+            try {
+                const socket = io('https://a58e-84-15-220-203.ngrok-free.app', {
+                    path: '/game',
+                    transports: ['websocket'],
+                    timeout: 10000,
+                    forceNew: true
+                });
+
+                socket.on('connect', () => {
+                    log('Socket.IO: CONNECTED - ID: ' + socket.id);
+                });
+
+                socket.on('connect_error', (error) => {
+                    log('Socket.IO: CONNECT_ERROR - ' + JSON.stringify(error));
+                });
+
+                socket.on('error', (error) => {
+                    log('Socket.IO: ERROR - ' + JSON.stringify(error));
+                });
+
+                socket.on('disconnect', (reason) => {
+                    log('Socket.IO: DISCONNECTED - ' + reason);
+                });
+
+                // Timeout after 10 seconds
+                setTimeout(() => {
+                    if (socket.connected) {
+                        log('Socket.IO: Test completed successfully');
+                        socket.disconnect();
+                    } else {
+                        log('Socket.IO: Test timed out');
+                    }
+                }, 10000);
+
+            } catch (e) {
+                log('Socket.IO: EXCEPTION - ' + e);
+            }
+        }
+
+        // Log page load
+        log('Page loaded. Click "Test Connection" to start.');
+    </script>
+</body>
+</html> 

@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { GameModule } from './game/game.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { StatsModule } from './stats/stats.module';
+import { BotsModule } from './bots/bots.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
@@ -18,6 +19,7 @@ import { ConfigModule } from '@nestjs/config';
     GameModule,
     RoomsModule,
     StatsModule,
+    BotsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -80,7 +80,7 @@ const MilestoneText = styled.div`
 const START_COUNT = 8542;
 const START_TIMESTAMP = Date.UTC(2025, 5, 17, 0, 0, 0); // June 17, 2025 00:00 UTC (month is 0-based)
 const USERS_PER_HOUR = 7;
-const MILESTONE = 10000;
+const MILESTONE = 100000;
 
 function getCurrentPlayerCount() {
   const now = Date.now();
