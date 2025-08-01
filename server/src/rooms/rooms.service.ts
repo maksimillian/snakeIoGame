@@ -19,10 +19,7 @@ export class RoomsService {
       },
     });
     
-    console.log(`Found ${rooms.length} rooms in database:`);
-    rooms.forEach(room => {
-      console.log(`  - Room ${room.id}: "${room.name}" (friend code: ${room.friendCode})`);
-    });
+    // Reduced room listing logs
     
     return rooms;
   }
@@ -43,7 +40,7 @@ export class RoomsService {
   }
 
   async findRoomByFriendCode(friendCode: string): Promise<Room | null> {
-    console.log(`Looking for room with friend code: ${friendCode}`);
+    // Reduced friend code lookup logging
     
     // Convert to uppercase for case-insensitive matching
     const normalizedFriendCode = friendCode.toUpperCase();
@@ -67,9 +64,9 @@ export class RoomsService {
     });
     
     if (room) {
-      console.log(`Found room: ${room.name} (ID: ${room.id}) with friend code: ${room.friendCode}`);
+      // Reduced room found logging
     } else {
-      console.log(`No room found with friend code: ${friendCode} (normalized: ${normalizedFriendCode})`);
+      // Reduced room not found logging
     }
     
     return room;
@@ -84,11 +81,11 @@ export class RoomsService {
     });
     
     if (existingRoom) {
-      console.log(`Friend code ${friendCode} already exists, generating new one...`);
+      // Reduced friend code generation logging
       return this.createRoom(name, serverId); // Recursively try again
     }
     
-    console.log(`Creating room "${name}" with friend code: ${friendCode}`);
+    // Reduced room creation logging
     
     return this.prisma.room.create({
       data: {
@@ -109,8 +106,7 @@ export class RoomsService {
   async autoJoinRoom(serverId?: number): Promise<Room | null> {
     // Only log occasionally to reduce performance impact
     if (Math.random() < 0.01) { // Log only 1% of the time
-    console.log('=== AUTO JOIN ROOM CALLED ===');
-    console.log('Prisma service:', this.prisma ? 'Available' : 'UNDEFINED');
+    // Reduced auto join logging
     }
     
     if (!this.prisma) {
@@ -129,7 +125,7 @@ export class RoomsService {
 
     // Only log occasionally to reduce performance impact
     if (Math.random() < 0.01) { // Log only 1% of the time
-    console.log('Searching for rooms with criteria:', whereClause);
+    // Reduced room search logging
     }
     
     return this.prisma.room.findFirst({
@@ -221,7 +217,7 @@ export class RoomsService {
       return this.generateFriendCode();
     }
     
-    console.log(`Generated friend code: ${result}`);
+    // Reduced friend code generation logging
     return result;
   }
 } 
